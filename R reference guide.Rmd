@@ -1,0 +1,877 @@
+---
+title: "R reference Guide"
+output: html_notebook
+---
+```{r}
+####help command####
+
+help('vector')
+help.search('vector')
+```
+
+```{r}
+#####Logical Operators#####
+
+#&  AND
+#!  NOT
+#| OR
+x<-10
+(x < 20) & (x> 5)& (x == 10)
+(x < 20) & (x> 80)| (x == 10)
+(x < 20) & (x> 9) & (!(x == 100))
+```
+```{r}
+#####If, else#######################
+x<-12
+if (x==10){
+  #code
+  print(x)
+}else if(x==12){
+  print('12')
+}else{
+  print('else')
+}
+
+#####While##########################
+x<-1
+while(x<10){
+  print(x)
+  x<-x+1
+  if(x==5){
+    break
+  }
+}
+#####for############################
+v <- c(1,2,3)
+for(x in v){
+  print(x)
+}
+
+mat<-matrix(1:25,nrow=5)
+for(row in 1:nrow(mat)){
+  for(col in  1:ncol(mat)){
+    print(row,col)
+  }
+}
+
+#####functions######################
+name_func <- function(input1,input2,input3){
+  result <- input1+input2
+  return(result)
+}
+
+```
+
+```{r}
+####Vectors####
+
+v1 <- c(1,2,3)
+names(v1) <- c('one','two','three') 
+v2 <- c(5,6,7)
+#operations
+
+v1-v2
+v2-v1
+v1*v2
+v1 / v2
+sum(v1)
+prod(v1)
+mean(v1)
+sd(v1)
+max(v1)
+
+#slice vectors
+
+v1[2]
+v1['two']
+v2[c(1,2)]
+v2[1:3]
+v2[v2>5]
+
+#filtering with vectors
+
+over.1 <- v1>1
+v1[over.1]
+
+#####Built-in R features######
+
+seq(0,10,by=2)
+
+v<- c(1,5,8,2,4,6)
+sort(v, decreasing= T)
+rev(v)
+str(v)
+
+v2<- c(1:10)
+append(v,v2)
+
+is.vector(v)
+as.list(v)
+as.matrix(v)
+```
+
+
+
+```{r}
+#### Matrix ####
+
+v <-  1:10
+matrix(v)
+matrix(v,nrow=2)
+matrix(1:12,byrow=FALSE,nrow=4)
+matrix(1:12,byrow=T,nrow=4)
+
+goog <- c(450,451,452,445,468)
+msft <- c(230,231,232,233,220)
+
+stocks <- c(goog,msft)
+
+stocks.matrix <- matrix(stocks,byrow=T,nrow=2)
+
+days <- c('Mon','Tues','Wed','Thu','Fri')
+st.names <- c('GOOG','MSFT')
+
+colnames(stocks.matrix)<- days
+rownames(stocks.matrix)<- st.names
+
+print(stocks.matrix)
+
+#Matrix Arithmetic
+
+mat <- matrix(1:25,byrow=T,nrow=5)
+mat*2
+mat<10
+mat[mat<10] #returns vector
+mat*mat
+mat%*%mat
+
+#Matrix operations
+
+colSums(stocks.matrix)
+rowSums(stocks.matrix)
+rowMeans(stocks.matrix)
+
+FB <- c(111,112,113,120,145)
+tech.stocks <- rbind(stocks.matrix,FB) #add row to matrix
+tech.stocks
+avg <- rowMeans(tech.stocks)
+tech.stocks <-cbind(tech.stocks,avg)#add column to matrix
+tech.stocks 
+
+#Matrix selection and indexin
+
+mat <- matrix (1:50, byrow=T, nrow=5)
+mat[1,] #first row
+mat[,1] #first column
+mat[1:2,1:3]
+
+#Factor and Categorical matrices
+
+animal <- c('d','c','d','c','c')
+id <- c(1,2,3,4,5)
+
+fact.ani <- factor(animal)
+
+temps <- c('cold','med','hot','hot','cold','med')
+
+fac.temp <- factor (temps, ordered = TRUE, levels = c('cold','med','hot'))
+fac.temp
+summary(fac.temp)
+```
+
+
+```{r}
+####Lists#####
+
+v  <- c(1,2,3)
+m  <- matrix(1:10,nrow=2)
+df  <- mtcars
+
+#create
+my.list  <- list(v,m,df)
+
+#named  data inside list
+my.named.list  <- list(sample_vec = v, my.matrix = m, sample.df = df)
+
+my.named.list$sample_vec #return vector
+my.named.list[['sample_vec']] #return vector
+my.named.list[1] #return list
+my.named.list['sample_vec'] #return list
+
+double.list <- c(my.named.list,my.named.list)
+```
+
+
+```{r}
+######lapply######
+v <- c(1,2,3,4,5)
+
+addrand <- function(x){
+  ran <- sample(1:100,1)
+  return(x+ran)
+}
+
+result <- lapply(v,addrand)
+print(result)
+result <- sapply(v,addrand)
+print(result)
+
+result <- sapply(v,function(num){num*2})
+```
+
+
+```{r}
+#####Date and Timestamps######
+
+Sys.Date()
+
+c<- "1990-01-01"
+class(c)
+
+my.date <- as.Date(c)
+class(my.date)
+
+#%d  Day of the month
+#%m Month (decimal number)
+#%b Month (abbreviated)
+#%B Month (full name)
+#%y Year (2 digit)
+#%Y Year (4 digit)
+
+my.date <-as.Date("Nov-03-90", format = "%b-%d-%y")
+as.Date("January/03/1992", format = "%B/%d/%Y")
+
+
+help(strptime)
+strptime("11:02:03", format= "%H:%M:%S")
+```
+
+```{r}
+
+####DataFrames####
+
+data()
+state.x77
+head(state.x77)
+tail(state.x77)
+str(state.x77)
+summary(state.x77)
+
+####Read file
+#csv
+read.csv('file.csv')
+
+write.csv(df,file = 'saved_df.csv')
+
+#excel
+install.packages('readxl')
+library(readxl)
+excel_sheets('file.xlsx')
+df <- read_excel('file.xlsx',sheet = "sheet_name")
+
+entire.workbook <- lapply(excel_sheets('file.xlsx'), read_excel, path='file.xlsx')
+
+install.packages('xlsx')
+library(xlsx)
+write.xlsx(df,"file.xlsx")
+
+#Creating DF
+
+days <- c('Mon','Tues','Wed','Thu','Fri')
+temp <- c(22.2,21,23,24,25)
+rain <- c(T,T,F,F,T)
+df <- data.frame(days,temp,rain)
+rownames(df)<- c('name1','name2',...)
+
+as.data.frame(matrix_name)
+
+##EDA
+head(mtcars)
+tail(mtcars)
+str(mtcars)
+nrow(mtcars)
+ncol(mtcars)
+colnames(mtcars)
+summary(mtcars)
+any(is.na(mtcars))
+any(is.na(mtcars$mpg))
+
+
+df[[5,'col.name']] #unique values from column from data in row 5,column 2
+
+df[[5,'col.name']] <- 999
+
+#Indexing and selection
+
+mtcars$mpg
+mtcars['mpg']
+mtcars[,'mpg']
+mtcars[['mpg']]
+mtcars[,1]
+mtcars[1:5,c('mpg','cyl')]
+mtcars[mtcars$mpg < 20,]
+
+
+#Filter
+subset(df,subset = rain==TRUE)
+subset(df,subset = temp<25)
+
+df[df$cyl==6,]
+
+
+mtcars[(mtcars$mpg < 20)& (mtcars$cyl == 6),c('mpg','cyl','hp')]
+subset(mtcars,mpg < 20 & cyl == 6 ,c('mpg','cyl','hp'))
+
+mean(subset(df,hp>100 & wt > 2.5)$mpg)
+mean(df[df$hp>100 & df$wt > 2.5,]$mpg)
+
+
+
+
+
+sorted.temp <- order(df['temp'])
+df[sorted.temp,]
+
+sorted.temp <- order(-df$temp)
+df[sorted.temp,]
+
+###Operations#####################
+empty <- data.frame()
+c1 <- 1:10
+
+#creating automatic column names
+c2 <- letters[1:10]   
+
+df <- data.frame(col.name.1=c1,col.name.2=c2)
+df2 <-data.frame(col.name.1=2000,col.name.2='new')
+
+#new column
+df$newcol <- 2*df$col.name.1 
+df$newcol.copy <- df$newcol
+
+#add df to df as rows
+dfnew <- rbind(df,df2)
+dfnew
+
+#rename columns
+
+colnames(df)<- c('1','2','3','4')
+colnames(df)[1] <- 'NEW COL NAME'
+head(df)
+
+#round columns
+
+df$column <-  round(df$column,2)
+
+###################################
+
+#Missings
+any(is.na(mtcars))
+any(is.na(mtcars$mpg))
+
+df[is.na(df)]<- 0
+mtcars$mpg[is.na(mtcars$mpg)] <- mean(mtcars$mpg)
+
+na.aggregate(df)
+
+```
+
+
+
+
+
+```{r}
+#####Data Manipulation#####
+
+#dplyr##################################################
+install.packages('dplyr')
+library(dplyr)
+
+#filter
+filter(mtcars, mpg ==21, hp==110, am==1)
+#slice
+slice(mtcars,1:10)
+#arrange
+arrange(mtcars,desc(disp),wt,vs,am)
+#select
+select(mtcars, cyl,hp)
+#rename
+head(rename(mtcars,horse_power = hp))
+#distinct
+distinct(select(mtcars,mpg))
+#mutate:create new col (return all columns)
+head(mutate(mtcars,new_col_name = hp+mpg))
+#transmutate_create new col (only return new column)
+head(transmutate(mtcars,new_col_name = hp+mpg))
+#summarise: return one row (need input result of one row)applying function
+summarise(mtcars,avg_mpg=mean(mpg, na.rm = TRUE))
+#sample
+sample_n(mtcars,10)
+sample_frac(mtcars,0.1) #10%
+
+
+#pipe operator##########################
+library(dplyr)
+df <- mtcars
+result <-  arrange(sample_n(filter(df,mpg < 20),size=5),desc(mpg))
+print(result)
+
+#Pipe operator
+#Data %>% op1 %>% op2 %>% op3
+
+result <- df %>% filter(mpg>20 ) %>% sample_n(size=5) %>%  arrange (desc(mpg))
+print(result)
+
+#dplyr##################################################
+install.packages('tidyr')
+install.packages('data.table')
+library(tidyr)
+library(data.table)
+
+#gather: collapse collumns with same data in key-value pairs columns
+comp <- c(1,1,1,2,2,2,3,3,3)
+yr<- c(1998,1999,2000,1998,1999,2000,1998,1999,2000)
+q1 <- runif(9,min =0,max=100)
+q2 <- runif(9,min =0,max=100)
+q3 <- runif(9,min =0,max=100)
+q4 <- runif(9,min =0,max=100)
+df <- data.frame(comp=comp, year=yr, Qtr1=q1,Qtr2=q2,Qtr3=q3,Qtr4=q4)
+
+gather(df,Quarter,Revenue,Qtr1:Qtr4)
+
+#separate
+separate(data=df, col=col.to.separate,into=c('col1','col2'),sep='-')
+#unite
+unite(df, new.joined.col,col1,col2, sep = '-')
+```
+```{r}
+###### ggplot2 ######
+
+install.packages('ggplot2')
+library(ggplot2)
+
+ggplot2(data=df) #data
+pl <- ggplot2(data=df, aes(x=col1, y=col2)) #data and axis
+pl + geom_point() #add points in representation
+pl <- ggplot2(data=df, aes(x=col1, y=col2)) + geom_point()
+pl + facet_grid(col~.) # separate by layers by value in one col
+pl2<- pl + facet_grud(col~.) + stat_smooth() #add statistic layer
+pl2 + coord_cartesian(xlim = c(coord1,coord2), ylim=c(coord1,coord2)) # size of axis
+pl2 + coord_cartesian(xlim = c(coord1,coord2), ylim=c(coord1,coord2)) + theme_bw() # add theme to the plot
+
+#theme set
+install.packages('ggthemes')
+library(ggthemes)
+theme_set(theme_classic())
+
+#Histogram
+install.packages('ggplot2movies')
+library(ggplot2movies)
+
+pl <- ggplot(movies, aes(x=rating))
+pl2 <-  pl + geom_histogram(binwidth = 0.1, color ='red', fill = 'pink', alpha= 0.4)
+pl3 <-  pl2 + xlab('Movie Rating') + ylab('Count')
+print(pl3 + ggtitle('MOVIE RATING'))
+
+pl <- ggplot(movies, aes(x=rating))
+pl2 <-  pl + geom_histogram(binwidth = 0.1, color ='red', aes(fill =..count..), alpha= 0.4)
+pl3 <-  pl2 + xlab('Movie Rating') + ylab('Count')
+print(pl3 + ggtitle('MOVIE RATING'))
+
+#Geometry
+pl <- ggplot(mtcars, aes(x=wt, y=mpg))
+pl2 <- pl + geom_point(size=5, color='blue')
+print(pl2)
+
+pl <- ggplot(mtcars, aes(x=wt, y=mpg))
+pl2 <- pl + geom_point(size=5, aes(color=hp))
+print(pl2)
+
+pl <- ggplot(mtcars, aes(x=wt, y=mpg))
+pl2 <- pl + geom_point(size=5, aes(color=hp))
+print(pl2 + scale_color_gradient(low='blue',high='red'))
+
+pl <- ggplot(mtcars, aes(x=wt, y=mpg))
+pl2 <- pl + geom_point(aes(shape=factor(cyl)),size=5, color ='blue')
+print(pl2)
+
+#Barplot
+df <-mpg
+pl <- ggplot(df,aes(x=class))
+pl2 <- pl + geom_bar(aes(fill=factor(drv))),position = "dodge")
+print(pl2)
+
+pl2 <- pl + geom_bar(aes(fill=factor(drv))),position = "fill")
+print(pl2)
+
+#Boxplots
+
+df <- mtcars
+
+pl <- ggplot(df,aes(x=factor(cyl),y=mpg))
+
+print(pl + geom_boxplot(aes(fill=factor(cyl))))
+
+#variable plotting
+
+pl <- ggplot(movies,aes(x=year,y=rating))
+print(pl + geom_bin2d(binwidth=c(3,1)) + scale_fill_gradient(high = 'red', low = 'blue'))
+
+print(pl + geom_density2d()) + scale_fill_gradient(high = 'red', low = 'blue')
+
+install.packages('hexbin')
+library(hexbin)
+
+print(pl + geom_hex()) + scale_fill_gradient(high = 'red', low = 'blue')
+```
+
+
+```{r}
+#################Machine Learning########################
+
+#Linear Regression
+
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(corrplot)
+library(caTools)
+
+
+
+setwd('E:\\Datasets')
+
+df <-read.csv('E:\\Datasets\\student-mat.csv', sep = ';')
+head(df)
+str(df)
+
+##Correlation matrix
+#Numeric columns
+num.cols <- sapply(df,is.numeric)
+#filter
+cor.data <- cor(df[,num.cols])
+print(corrplot(cor.data, method='color'))
+
+##Prediction
+
+#seed
+set.seed(101)
+#Training and Test data split
+sample <- sample.split(df$G3,SplitRatio = 0.7)
+#70% of data 
+train <- subset(df,sample == TRUE)
+#30% of data 
+test <- subset(df,sample == FALSE)
+#model
+#model <- lm(y ~., data)  # Uses all features
+model <- lm(G3 ~., train)
+summary(model) #stars indicates low p value (low probability to be not significant, so they indicate that the variable is relevant)
+#residuals
+res <-  residuals(model)
+res <- as.data.frame(res)
+ggplot(res,aes(res)) + geom_histogram(fill ='blue', alpha = 0.5)
+
+#predictions
+G3.predictions <- predict(model, test)
+results <- cbind(G3.predictions,test$G3)
+colnames(results) <- c('predicted','actual')
+results <- as.data.frame(results)
+results
+
+##Evaluation
+to_zero <- function(x){
+  if (x < 0){
+    return(0)
+  }else{
+    return(x)
+  }
+}
+
+results$predicted <- sapply(results$predicted, to_zero)
+#MSE
+mse <- mean((results$actual - results$predicted)^2)
+print(mse)
+#RMSE
+print(mse^0.5)
+#
+SSE <- sum((results$actual - results$predicted)^2)
+SST <- sum((mean(df$G3)- results$actual)^2)
+R2 <- 1 - SSE/SST
+print('R2')
+print(R2)
+
+#Logistic Regression################################################
+
+df <- read.csv('E:\\Datasets\\adult_sal.csv')
+print(head(df))
+str(df)
+
+library(dplyr)
+adult <- select(df,-X)
+print(summary(adult))
+
+##Data cleaning
+
+table(adult$type_employer)
+#Combine employer types ###Bined data###
+unemp <- function(job){
+  job <- as.character(job)
+  if (job == 'Never-worked'|job == 'Without-pay'){
+    return('Unemployed')
+  }else{
+    return(job)
+  }
+}
+
+adult$type_employer <- sapply(adult$type_employer,unemp)
+print(table(adult$type_employer))
+
+group_emp <- function(job){
+  if (job == 'Local-gov'|job == 'State-gov'){
+    return('SL-gov')
+  }else if(job == 'Self-emp-inc'|job == 'Self-emp-not-inc'){
+    return('self-emp')
+  }else{
+    return(job)
+  }
+}
+
+adult$type_employer <- sapply(adult$type_employer,group_emp)
+print(table(adult$type_employer))
+
+group_marital <- function(mar){
+  mar <- as.character(mar)
+  if (mar == 'Separated'|mar == 'Divorced' |mar == 'Widowed'){
+    return('Not-Married')
+  }else if(mar == 'Never-married'){
+    return(mar)
+  }else{
+    return('Married')
+  }
+}
+
+adult$marital <- sapply(adult$marital,group_marital)
+print(table(adult$marital))
+
+#Missing data
+library(Amelia)
+adult[adult=='?'] <- NA
+print(table(adult$type_employer))
+
+missmap(adult, y.at=c(1),y.labels=c(''),col=c("yellow", "black"), legend=FALSE)
+
+adult  <- na.omit(adult)
+
+missmap(adult, y.at=c(1),y.labels=c(''),col=c("yellow", "black"), legend=FALSE)
+
+##Visualization
+
+library(ggplot2)
+library(dplyr)
+ggplot(adult,aes(age)) + geom_histogram((aes(fill=income)), color = 'black', binwidth  = 1) + theme_bw()
+ggplot(adult,aes(hr_per_week)) + geom_histogram() + theme_bw()
+adult <-  rename(adult,region = country)
+
+ggplot(adult,aes(region)) + geom_bar(aes(fill=income), color = 'black') + theme_bw()
+
+
+##Model
+
+#Train and test split
+library(caTools)
+set.seed(101)
+split <- sample.split(adult$income, SplitRatio = 0.7)
+train <- subset(adult, split == TRUE)
+test <-subset(adult, split == FALSE)
+
+#log.model <- glm(label ~., family=binomial(link='logit'), data = )
+log.model <- glm(income ~., family=binomial(link='logit'), data = train)
+summary(log.model)
+
+##Predictions
+fitted.probabilities <-  predict(log.model, newdata = test, type = 'response')
+fitted.results  <- ifelse(fitted.probabilities>0.5,1,0)
+
+##Evaluation
+misClassError <- mean(fitted.results != test$income)
+print(paste('Accuracy',1-misClasificError))
+
+
+#Confusion matrix
+table(test$income, test$predicted.income>0.5)
+
+
+
+
+#KNN################################################
+
+library(ISLR)
+
+str(iris)
+any(is.na(iris))
+
+#For numerica data:
+var(iris[,1])
+var(iris[,2])
+
+#Normalize data
+stand.features <- scale(iris[1:4])
+final.data <- cbind(stand.features, iris[5])
+str(final.data)
+var(final.data[,1])
+var(final.data[,2])
+
+#Train Test split
+set.seed(101)
+library(caTools)
+sample <- sample.split(final.data$Species, SplitRatio = 0.7)
+train <- subset(final.data, split == TRUE)
+test <-subset(final.data, split == FALSE)
+
+##Model
+library(class)
+set.seed(101)
+
+##Evaluation
+train <- na.omit(train)
+test <- na.omit(test)
+any(is.na(test))
+
+predicted.species <- knn(train[1:4],test[1:4],train$Species, k=4)
+
+misclass.error <- mean(test$Species != predicted.species)
+
+print(misclass.error)
+
+
+predicted.species<-NULL
+error.rate<-NULL
+
+for (i in 1:20){
+  set.seed(101)
+  predicted.species<- knn(train[1:4],test[1:4],train$Species, k=i)
+  error.rate[i] <- mean(test$Species != predicted.species)
+}
+
+library(ggplot2)
+k.values <- 1:10
+error.df <- data.frame(error.rate,k.values)
+
+ggplot(error.df, aes(k.values,error.rate)) + geom_point() + geom_line(lty= 'dotted', color='red')
+
+
+#Tree methods################################################
+library(ISLR)
+head(College)
+str(College)
+df <- College
+
+#Visualization
+ggplot(df,aes(F.Undergrad))+ geom_histogram(aes(fill=Private), color = 'black', bins= 50,alpha = 0.5 ) + theme_bw()
+
+ggplot(df,aes(Grad.Rate))+ geom_histogram(aes(fill=Private), color = 'black', bins= 50,alpha = 0.5 ) + theme_bw()
+
+subset(df,Grad.Rate>100)
+df['Cazenovia College','Grad.Rate'] <- 100
+print(subset(df,Grad.Rate>100))
+
+#Train Test split
+set.seed(101)
+library(caTools)
+sample <- sample.split(df$Private, SplitRatio = 0.7)
+train <- subset(df, split == TRUE)
+test <-subset(df, split == FALSE)
+
+#model (Decision Tree)
+library(rpart)
+tree<- rpart(Private ~.,method = 'class',data=train)
+summary(tree)
+library(rpart.plot)
+prp(tree)
+#predictions
+tree.preds <- predict(tree,test)
+tree.preds <- as.data.frame(tree.preds)
+joiner <- function(x){
+  if (x >= 0.5){
+    return('Yes')
+  }else{
+    return('No')
+  }
+}
+tree.preds$Private <-sapply(tree.preds$Yes,joiner)
+print(head(tree.preds))
+
+#model (Random Forest)
+library(randomForest)
+rf.model<- randomForest(Private ~.,data=train, importante=TRUE)
+#Evaluation
+rf.model$confusion
+rf.model$importance
+#Predictions
+rf.preds <-predict(rf.model,test)
+table(rf.preds,test$Private)
+
+#SVM################################################
+
+loan <-read.csv('E:\\Datasets\\loan_data.csv')
+head(loan)
+str(loan)
+
+#int to factors
+loan$credit.policy <-factor(loan$credit.policy)
+loan$inq.last.6mths  <-factor(loan$inq.last.6mths)
+loan$delinq.2yrs <-factor(loan$delinq.2yrs )
+loan$pub.rec   <-factor(loan$pub.rec  )
+loan$not.fully.paid <-factor(loan$not.fully.paid)
+
+
+#Train Test split
+set.seed(101)
+library(caTools)
+sample <- sample.split(loan$not.fully.paid, SplitRatio = 0.7)
+train <- subset(loan, split == TRUE)
+test <-subset(loan, split == FALSE)
+
+#model
+library(e1071)
+help("svm")
+model <- svm(not.fully.paid ~., data = train)
+summary(model)
+#predictions
+pred.values <- predict(model, test[1:13])
+table(pred.values,test$not.fully.paid)
+
+#tune results
+tune.results <-tune(svm,train.x = not.fully.paid ~., data = train,kernel ='radial',
+                    ranges = list(cost=c(100,200),gamma=c(0.1)))
+
+print(summary(tuned.results))
+```
+```{r}
+######Clustering######
+
+####Kmeans#####
+
+set.seed(101)
+
+irisCluster <- kmeans(iris[,1:4],3,nstart = 20)
+print(irisCluster)
+print(irisCluster$centers)
+table(irisCluster$cluster,iris$Species)
+
+library(cluster)
+clusplot(iris,irisCluster$cluster, color = T, shade = T, labels = 0, lines = 0)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
