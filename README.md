@@ -1,6 +1,6 @@
 # R
 
-Repository with R project and examples. I created a R guide with the basics. 
+Repository with R projects and examples. I created also a R guide with the basics for Machine Learning and Clustering. 
 
 ## Current content
 
